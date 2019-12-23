@@ -2,8 +2,9 @@
 
 import 'package:flutter/material.dart';
 import '../../style.dart';
-import '../../task.dart';
-import '../../collapse_task.dart';
+import '../../widgets/task.dart';
+import '../../widgets/job.dart';
+import '../../widgets/list_jobs.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -19,33 +20,9 @@ class Home extends StatelessWidget {
         ),
       ),
       body: Center(
-        child: ListView.builder(
-          itemBuilder: (BuildContext context, int index) =>
-              JobWidget(data[index]),
-          itemCount: data.length,
-        ),
+        child: ListJob(),
       ),
+      // floatingActionButton: AddJobButton(),
     );
   }
 }
-
-//fake data
-// The entire multilevel list displayed by this app.
-final List<Job> data = <Job>[
-  Job(
-    'Chapter A',
-    <Task>[
-      Task(taskContent: 'Section A0', completed: true),
-      Task(taskContent: 'Section A1', completed: false),
-      Task(taskContent: 'Section A2', completed: false),
-    ],
-  ),
-  Job(
-    'Chapter B',
-    <Task>[
-      Task(taskContent: 'Section B0', completed: false),
-      Task(taskContent: 'Section B1', completed: true),
-      Task(taskContent: 'Section B2', completed: true),
-    ],
-  ),
-];

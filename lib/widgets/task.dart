@@ -12,12 +12,12 @@ class Task extends StatefulWidget {
 class _Task extends State<Task> {
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile(
-      controlAffinity: ListTileControlAffinity.leading,
-      activeColor: Colors.green,
+    return ListTile(
+      leading: Icon(
+          widget.completed ? Icons.check_circle: Icons.check_circle_outline,
+          color: widget.completed ? Colors.green : Colors.grey),
       title: checkBoxText(widget.taskContent),
-      value: widget.completed,
-      onChanged: (bool value) {
+      onTap: () {
         setState(() {
           widget.completed = !widget.completed;
         });
@@ -25,11 +25,13 @@ class _Task extends State<Task> {
     );
   }
 
-  Text checkBoxText(String str)
-  {
-    if(widget.completed == true)
-    {
-      return Text(str, style: TextStyle(decoration: TextDecoration.lineThrough, fontStyle: FontStyle.italic, color: Colors.grey));
+  Text checkBoxText(String str) {
+    if (widget.completed == true) {
+      return Text(str,
+          style: TextStyle(
+              decoration: TextDecoration.lineThrough,
+              fontStyle: FontStyle.italic,
+              color: Colors.grey));
     }
     return Text(str, style: TextStyle(decoration: TextDecoration.none));
   }
