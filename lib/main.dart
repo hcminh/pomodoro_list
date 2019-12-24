@@ -1,12 +1,17 @@
-// main.dart
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'app.dart';
+import 'pages/home.dart';
 
-void main() {
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent, //top bar color
-  ));
-  runApp(App());
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'F-Pomodoro',
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+      ),
+      home: HomePage(title: 'F-Pomodoro'),
+    );
+  }
 }
