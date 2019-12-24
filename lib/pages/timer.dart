@@ -37,22 +37,53 @@ class _TimerPageState extends State<TimerPage>
   Animation<double> heightSize;
   AnimationController _controller;
 
-  double brightness = 0.5;
+  double brightness = 0.4;
   bool isKeptOn = false;
+
+  createAlertDialog(BuildContext context, Task task) {
+    Widget launchButton = FlatButton(
+      child: Text('OK',
+          style: TextStyle(
+            fontSize: 18.0,
+          )),
+      onPressed: () {
+        print("object \n");
+        Navigator.of(context).pop(task);
+        backToHome(task);
+      },
+    );
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: task.done ? Text("Great!") : Text("Ops!"),
+            content: task.done
+                ? Text("Let relaxing 2 minutes before next task..")
+                : Text("Do some tubs before continue.."),
+            elevation: 24.0,
+            actions: <Widget>[launchButton],
+          );
+        });
+  }
+
+  void backToHome(Task task) {
+    Navigator.of(context).pop(task);
+  }
 
   void updateClock() {
     if (stopwatch.elapsed.inMinutes == minutes) {
       if (Navigator.canPop(context)) {
-        final task = getTask();
-        Navigator.of(context).pop(task);
+      final task = getTask();
+      Navigator.of(context).pop(task);
+      createAlertDialog(context, task);
       }
       return;
     }
     var currentMinute = stopwatch.elapsed.inMinutes;
     var currentSecond = stopwatch.elapsed.inSeconds + 1;
     setState(() {
-      percentCoutLeft = 1.0 - currentSecond/(minutes*60);
-      if(percentCoutLeft == 0) percentCoutLeft = 0.1;
+      percentCoutLeft = 1.0 - currentSecond / (minutes * 60);
+      if (percentCoutLeft == 0) percentCoutLeft = 0.1;
       timeRadius = (currentSecond);
       timeText =
           '${(minutes - currentMinute - 1).toString().padLeft(2, "0")}:${((60 - stopwatch.elapsed.inSeconds % 60 - 1)).toString().padLeft(2, '0')}';
@@ -129,8 +160,9 @@ class _TimerPageState extends State<TimerPage>
               builder: (context, child) {
                 return DemoBody(
                   size: size,
-                  // color: Theme.of(context).primaryColor,
-                  color: Color.fromARGB(230, 25.5~/percentCoutLeft, 120, (255*percentCoutLeft).toInt()),
+                  color: Theme.of(context).primaryColor,
+                  // color: Color.fromARGB(230, 25.5 ~/ percentCoutLeft, 120,
+                  //     (255 * percentCoutLeft).toInt()),
                 );
               },
             ),
@@ -163,7 +195,8 @@ class _TimerPageState extends State<TimerPage>
                       tag: 'text-${widget.task.id}',
                       child: Text(
                         widget.task.title,
-                        style: TextStyle(fontSize: 30.0, color: Colors.grey[850]),
+                        style:
+                            TextStyle(fontSize: 30.0, color: Colors.grey[850]),
                       ),
                     ),
                     Text(
@@ -192,17 +225,18 @@ class _TimerPageState extends State<TimerPage>
                             ),
                           ),
                           Container(
-                              height: 150,
-                              width: 150,
-                              margin: EdgeInsets.only(left: 25, top: 25),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(100.0)),
-                                  border: Border.all(
-                                      width: 17,
-                                      color: Colors.black,
-                                      style: BorderStyle.solid)),
-                              child: null,
-                            ),
+                            height: 150,
+                            width: 150,
+                            margin: EdgeInsets.only(left: 25, top: 25),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(100.0)),
+                                border: Border.all(
+                                    width: 17,
+                                    color: Colors.black,
+                                    style: BorderStyle.solid)),
+                            child: null,
+                          ),
                         ],
                       ),
                       // Text(
@@ -222,7 +256,9 @@ class _TimerPageState extends State<TimerPage>
                     child: RoundedButton(),
                     onTap: () {
                       final task = getTask()..done = true;
-                      Navigator.of(context).pop(task);
+
+                      createAlertDialog(context, task);
+                      // Navigator.of(context).pop(task);
                     }),
               ),
             )
