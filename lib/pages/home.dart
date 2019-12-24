@@ -1,6 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../pages/new_task.dart';
 import '../models/task.dart';
 import '../utils/manager.dart';
 import '../pages/timer.dart';
@@ -19,11 +19,14 @@ class _HomePageState extends State<HomePage> {
   Manager taskManager = Manager();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey _itemKey = GlobalObjectKey("item");
+  TextEditingController _titleController, _descriptionController;
 
   @override
   void initState() {
     super.initState();
     taskManager.loadAllTasks();
+    _descriptionController = TextEditingController(text: '');
+    _titleController = TextEditingController(text: '');
   }
 
   void _startTimer(Task task) async {
@@ -41,17 +44,21 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _addTask() async {
-    Task task = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => NewTaskPage()),
-    );
+  void _saveTaskAndClose() async {
+    String title = _titleController.text;
+    String description = _descriptionController.text;
 
+    if (title.trim().isEmpty) {
+      return;
+    }
+
+    Task task = Task(0, title, description, false);
     if (task != null) {
       await Manager().addNewTask(task);
       await taskManager.loadAllTasks();
       setState(() {});
     }
+    Navigator.pop(context);
   }
 
   @override
@@ -66,7 +73,59 @@ class _HomePageState extends State<HomePage> {
           fillColor: Colors.blue,
           elevation: 0.0,
           child: addTaskIcon,
-          onPressed: _addTask,
+          // onPressed: _addTask,
+          onPressed: () => showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                    title: Text("Add your new task"),
+                    content: Container(
+                      height: 140,
+                      width: MediaQuery.of(context).size.width * 0.95,
+                      child: Column(
+                        children: <Widget>[
+                        TextField(
+                          autofocus: true,
+                          maxLength: 24,
+                          controller: _titleController,
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.black,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Task title',
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding:
+                                EdgeInsets.only(left: 8, right: 8),
+                          ),
+                        ),
+                        TextField(
+                          controller: _descriptionController,
+                          keyboardType: TextInputType.multiline,
+                          maxLength: 50,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.black,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Description',
+                            filled: true,
+                            fillColor: Colors.white,
+                            contentPadding:
+                                EdgeInsets.only(left: 8, right: 8),
+                          ),
+                        ),
+                      ],
+                    ),
+                    ),
+                    elevation: 24.0,
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text('Save', style: TextStyle(fontSize: 18.0,),),
+                        onPressed: _saveTaskAndClose,
+                      ),
+                    ],
+                  )),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

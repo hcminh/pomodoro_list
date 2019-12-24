@@ -58,5 +58,5 @@ const Icon backIcon = Icon(
 const Icon finishIcon = Icon(
   Icons.check_circle_outline,
   size: 140.0,
-  color: Colors.grey,
+  color: Colors.lightGreenAccent,
 );

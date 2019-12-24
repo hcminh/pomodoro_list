@@ -28,6 +28,7 @@ class _TimerPageState extends State<TimerPage>
   String timeText = '';
   int timeRadius = 0;
   int minutes = 1;
+  double percentCoutLeft = 1.0;
 
   Stopwatch stopwatch = Stopwatch();
   static const delay = Duration(microseconds: 1);
@@ -42,7 +43,7 @@ class _TimerPageState extends State<TimerPage>
   void updateClock() {
     if (stopwatch.elapsed.inMinutes == minutes) {
       if (Navigator.canPop(context)) {
-        final task = getTask()..done = true;
+        final task = getTask();
         Navigator.of(context).pop(task);
       }
       return;
@@ -50,6 +51,8 @@ class _TimerPageState extends State<TimerPage>
     var currentMinute = stopwatch.elapsed.inMinutes;
     var currentSecond = stopwatch.elapsed.inSeconds + 1;
     setState(() {
+      percentCoutLeft = 1.0 - currentSecond/(minutes*60);
+      if(percentCoutLeft == 0) percentCoutLeft = 0.1;
       timeRadius = (currentSecond);
       timeText =
           '${(minutes - currentMinute - 1).toString().padLeft(2, "0")}:${((60 - stopwatch.elapsed.inSeconds % 60 - 1)).toString().padLeft(2, '0')}';
@@ -115,7 +118,7 @@ class _TimerPageState extends State<TimerPage>
     );
 
     Size size =
-        new Size(MediaQuery.of(context).size.width, heightSize.value * 0.95);
+        new Size(MediaQuery.of(context).size.width, heightSize.value * 0.9);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Material(
@@ -127,7 +130,7 @@ class _TimerPageState extends State<TimerPage>
                 return DemoBody(
                   size: size,
                   // color: Theme.of(context).primaryColor,
-                  color: Color.fromARGB(255, 33,150,243),
+                  color: Color.fromARGB(230, 25.5~/percentCoutLeft, 120, (255*percentCoutLeft).toInt()),
                 );
               },
             ),
@@ -151,7 +154,7 @@ class _TimerPageState extends State<TimerPage>
             Align(
               alignment: Alignment.topCenter,
               child: Container(
-                margin: EdgeInsets.only(top: 100),
+                margin: EdgeInsets.only(top: 150),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
@@ -160,12 +163,12 @@ class _TimerPageState extends State<TimerPage>
                       tag: 'text-${widget.task.id}',
                       child: Text(
                         widget.task.title,
-                        style: TextStyle(fontSize: 30.0, color: Colors.grey),
+                        style: TextStyle(fontSize: 30.0, color: Colors.grey[850]),
                       ),
                     ),
                     Text(
                       widget.task.description,
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: Colors.grey[800]),
                     ),
                   ],
                 ),
