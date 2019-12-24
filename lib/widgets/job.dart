@@ -14,7 +14,7 @@ class JobWidget extends StatelessWidget {
   final Job job;
 
   Widget _buildTiles(Job root) {
-    if (root.children.isEmpty) return Task(taskContent: root.title);
+    if (root.children.isEmpty) return Task(taskContent: root.title, completed: false);
     return ExpansionTile(
       backgroundColor: Colors.transparent,
       title: Text(
@@ -22,9 +22,9 @@ class JobWidget extends StatelessWidget {
         style: jobTitle,
       ),
       children: root.children
-          .map((item) =>
-              Task(taskContent: item.taskContent, completed: item.completed))
-          .toList(),
+          .map((item) {
+            return Task(taskContent: item.taskContent, completed: item.completed);
+          }).toList()
     );
   }
 

@@ -15,6 +15,12 @@ class ListJobState extends State<ListJob> {
     setState(() {});
   }
 
+  // _addNewTaskOnJob(Job job, Task task)
+  // {
+  //   job.children.add(task);
+
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,9 +46,9 @@ class AddJobButtonState extends State<AddJobButton> {
     widget.addNewJob(Job(
       'Chapter C',
       <Task>[
-        Task(taskContent: 'Section A0', completed: true),
         Task(taskContent: 'Section A1', completed: false),
         Task(taskContent: 'Section A2', completed: false),
+        Task(taskContent: '', completed: false),
       ],
     ));
   }
@@ -66,6 +72,7 @@ List<Job> data = <Job>[
       Task(taskContent: 'Section A0', completed: true),
       Task(taskContent: 'Section A1', completed: false),
       Task(taskContent: 'Section A2', completed: false),
+      Task(taskContent: '', completed: false),
     ],
   ),
   Job(
@@ -74,6 +81,7 @@ List<Job> data = <Job>[
       Task(taskContent: 'Section B0', completed: false),
       Task(taskContent: 'Section B1', completed: true),
       Task(taskContent: 'Section B2', completed: true),
+      Task(taskContent: '', completed: false),
     ],
   ),
 ];

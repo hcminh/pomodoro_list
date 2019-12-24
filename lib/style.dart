@@ -12,3 +12,8 @@ const TextStyle jobTitle = TextStyle(
           fontSize: 18.0,
           letterSpacing: 0.6,
         );
+
+const TextStyle taskTitleCompleted = TextStyle(
+              decoration: TextDecoration.lineThrough,
+              fontStyle: FontStyle.italic,
+              color: Colors.grey);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../style.dart';
 
 class Task extends StatefulWidget {
   final String taskContent;
@@ -14,9 +15,9 @@ class _Task extends State<Task> {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(
-          widget.completed ? Icons.check_circle: Icons.check_circle_outline,
+          widget.completed ? Icons.check_circle : Icons.check_circle_outline,
           color: widget.completed ? Colors.green : Colors.grey),
-      title: checkBoxText(widget.taskContent),
+      title: checkBoxTextWidget(widget.taskContent),
       onTap: () {
         setState(() {
           widget.completed = !widget.completed;
@@ -25,13 +26,18 @@ class _Task extends State<Task> {
     );
   }
 
-  Text checkBoxText(String str) {
+  Widget checkBoxTextWidget(String str) {
+    if (str == "") {
+      return TextField(
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: 'Enter a new task',
+        ),
+        // onSubmitted: ,
+      );
+    }
     if (widget.completed == true) {
-      return Text(str,
-          style: TextStyle(
-              decoration: TextDecoration.lineThrough,
-              fontStyle: FontStyle.italic,
-              color: Colors.grey));
+      return Text(str, style: taskTitleCompleted);
     }
     return Text(str, style: TextStyle(decoration: TextDecoration.none));
   }
