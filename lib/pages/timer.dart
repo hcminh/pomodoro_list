@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:screen/screen.dart';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/animation.dart';
 
 import '../models/task.dart';
 import '../ui/wave.dart';
+import '../style.dart';
 
 class TimerPage extends StatefulWidget {
   final Task task;
@@ -24,9 +26,8 @@ class _TimerPageState extends State<TimerPage>
   Task getTask() => widget.task;
 
   String timeText = '';
-  String buttonText = 'Start';
-
-  int minutes = 25;
+  int timeRadius = 0;
+  int minutes = 1;
 
   Stopwatch stopwatch = Stopwatch();
   static const delay = Duration(microseconds: 1);
@@ -41,30 +42,22 @@ class _TimerPageState extends State<TimerPage>
   void updateClock() {
     if (stopwatch.elapsed.inMinutes == minutes) {
       if (Navigator.canPop(context)) {
-        Navigator.of(context).pop(getTask()..pomCount = getTask().pomCount + 1);
+        final task = getTask()..done = true;
+        Navigator.of(context).pop(task);
       }
       return;
     }
-
     var currentMinute = stopwatch.elapsed.inMinutes;
-
+    var currentSecond = stopwatch.elapsed.inSeconds + 1;
     setState(() {
+      timeRadius = (currentSecond);
       timeText =
           '${(minutes - currentMinute - 1).toString().padLeft(2, "0")}:${((60 - stopwatch.elapsed.inSeconds % 60 - 1)).toString().padLeft(2, '0')}';
     });
 
-    if (stopwatch.isRunning) {
-      setState(() {
-        buttonText = "Running";
-      });
-    } else if (stopwatch.elapsed.inSeconds == 0) {
+    if (stopwatch.elapsed.inSeconds == 0) {
       setState(() {
         timeText = '$minutes:00';
-        buttonText = "Start";
-      });
-    } else {
-      setState(() {
-        buttonText = "Paused";
       });
     }
   }
@@ -85,6 +78,11 @@ class _TimerPageState extends State<TimerPage>
     _keepScreenAwake();
 
     timer = Timer.periodic(delay, (Timer t) => updateClock());
+
+    begin = 50.0;
+    stopwatch.start();
+    _controller.forward();
+    updateClock();
   }
 
   void _keepScreenAwake() async {
@@ -108,7 +106,7 @@ class _TimerPageState extends State<TimerPage>
   @override
   Widget build(BuildContext context) {
     heightSize =
-        new Tween(begin: begin, end: MediaQuery.of(context).size.height - 65)
+        new Tween(begin: begin, end: MediaQuery.of(context).size.height + 70.0)
             .animate(
       CurvedAnimation(
         parent: _controller,
@@ -117,7 +115,7 @@ class _TimerPageState extends State<TimerPage>
     );
 
     Size size =
-        new Size(MediaQuery.of(context).size.width, heightSize.value * 0.9);
+        new Size(MediaQuery.of(context).size.width, heightSize.value * 0.95);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Material(
@@ -128,7 +126,8 @@ class _TimerPageState extends State<TimerPage>
               builder: (context, child) {
                 return DemoBody(
                   size: size,
-                  color: Theme.of(context).primaryColor,
+                  // color: Theme.of(context).primaryColor,
+                  color: Color.fromARGB(255, 33,150,243),
                 );
               },
             ),
@@ -139,32 +138,13 @@ class _TimerPageState extends State<TimerPage>
                   IconButton(
                       icon: Icon(
                         Icons.arrow_back,
-                        size: 40.0,
+                        size: 35.0,
                         color: Colors.grey,
                       ),
                       onPressed: () {
-                        if (stopwatch.elapsed.inMinutes > 0) {
-                          Navigator.of(context).pop(
-                              getTask()..pomCount = getTask().pomCount + 1);
-                        } else {
-                          Navigator.of(context).pop();
-                        }
+                        Navigator.of(context).pop();
                       }),
                   Spacer(),
-                  IconButton(
-                    icon: Icon(
-                      Icons.done_all,
-                      size: 32.0,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    onPressed: () {
-                      final task = getTask()
-                        ..done = true
-                        ..pomCount = getTask().pomCount + 1;
-
-                      Navigator.of(context).pop(task);
-                    },
-                  ),
                 ],
               ),
             ),
@@ -199,13 +179,33 @@ class _TimerPageState extends State<TimerPage>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Text(
-                        timeText,
-                        style: TextStyle(
-                            fontSize: 54.0,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
+                      Stack(
+                        children: <Widget>[
+                          Transform.rotate(
+                            angle: 2 * pi * timeRadius / (minutes * 60),
+                            child: Icon(
+                              Icons.power_settings_new,
+                              size: 200.0,
+                            ),
+                          ),
+                          Container(
+                              height: 150,
+                              width: 150,
+                              margin: EdgeInsets.only(left: 25, top: 25),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(100.0)),
+                                  border: Border.all(
+                                      width: 17,
+                                      color: Colors.black,
+                                      style: BorderStyle.solid)),
+                              child: null,
+                            ),
+                        ],
                       ),
+                      // Text(
+                      //   timeText,
+                      //   style: textTimerCouting,
+                      // ),
                     ],
                   ),
                 ),
@@ -216,18 +216,10 @@ class _TimerPageState extends State<TimerPage>
               child: Container(
                 margin: EdgeInsets.only(bottom: 32),
                 child: GestureDetector(
-                    child: RoundedButton(text: buttonText),
+                    child: RoundedButton(),
                     onTap: () {
-                      if (stopwatch.isRunning) {
-                        stopwatch.stop();
-                        _controller.stop(canceled: false);
-                      } else {
-                        begin = 50.0;
-                        stopwatch.start();
-                        _controller.forward();
-                      }
-
-                      updateClock();
+                      final task = getTask()..done = true;
+                      Navigator.of(context).pop(task);
                     }),
               ),
             )
@@ -239,8 +231,7 @@ class _TimerPageState extends State<TimerPage>
 }
 
 class RoundedButton extends StatefulWidget {
-  final String text;
-  RoundedButton({Key key, @required this.text}) : super(key: key);
+  RoundedButton({Key key}) : super(key: key);
 
   @override
   _RoundedButtonState createState() => _RoundedButtonState();
@@ -249,25 +240,10 @@ class RoundedButton extends StatefulWidget {
 class _RoundedButtonState extends State<RoundedButton> {
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
       width: 140.0,
       height: 140.0,
-      decoration: new BoxDecoration(
-          color: Color.fromRGBO(220, 220, 220, 220),
-          borderRadius: BorderRadius.circular(100.0),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Color.fromRGBO(220, 220, 220, 220), blurRadius: 0.0)
-          ]),
-      child: Center(
-        child: Text(
-          widget.text.toUpperCase(),
-          style: TextStyle(
-            fontSize: 24.0,
-            color: Colors.black,
-          ),
-        ),
-      ),
+      child: finishIcon,
     );
   }
 }

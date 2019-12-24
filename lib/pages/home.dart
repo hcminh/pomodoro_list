@@ -1,18 +1,15 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../pages/new_task.dart';
 import '../models/task.dart';
 import '../utils/manager.dart';
 import '../pages/timer.dart';
+import '../style.dart';
 
-import 'package:highlighter_coachmark/highlighter_coachmark.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
-  final String title;
+  HomePage({Key key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -21,19 +18,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Manager taskManager = Manager();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  GlobalKey _fabKey = GlobalObjectKey("fab");
   GlobalKey _itemKey = GlobalObjectKey("item");
 
   @override
   void initState() {
     super.initState();
     taskManager.loadAllTasks();
-    Timer(Duration(seconds: 1), () => showCoachMarkFAB());
-  }
-
-  void _showSnackBar(String msg) {
-    final snackBar = SnackBar(content: Text(msg));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   void _startTimer(Task task) async {
@@ -47,9 +37,7 @@ class _HomePageState extends State<HomePage> {
     if (result != null) {
       await Manager().updateTask(result);
       await taskManager.loadAllTasks();
-      setState(() {
-        _showSnackBar('Updated: ${result.title}');
-      });
+      setState(() {});
     }
   }
 
@@ -62,107 +50,40 @@ class _HomePageState extends State<HomePage> {
     if (task != null) {
       await Manager().addNewTask(task);
       await taskManager.loadAllTasks();
-      setState(() {
-        _showSnackBar('Added: ${task.title}');
-      });
+      setState(() {});
     }
-  }
-
-  void showCoachMarkFAB() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final fabCoach = prefs.getBool('fab') ?? false;
-    if (fabCoach) {
-      return;
-    }
-
-    CoachMark coachMarkFAB = CoachMark();
-    RenderBox target = _fabKey.currentContext.findRenderObject();
-
-    Rect markRect = target.localToGlobal(Offset.zero) & target.size;
-    markRect = Rect.fromCircle(
-        center: markRect.center, radius: markRect.longestSide * 0.6);
-
-    coachMarkFAB.show(
-        targetContext: _fabKey.currentContext,
-        markRect: markRect,
-        children: [
-          Center(
-              child: Text("Tap on button\nto add a tasks",
-                  style: const TextStyle(
-                    fontSize: 24.0,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.white,
-                  )))
-        ],
-        duration: null,
-        onClose: () {
-          prefs.setBool('fab', true);
-        });
-  }
-
-  void showCoachMarkItem() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final itemCoach = prefs.getBool('item') ?? false;
-    if (_itemKey == null || _itemKey.currentContext == null || itemCoach) {
-      return;
-    }
-    CoachMark coachMarkFAB = CoachMark();
-
-    RenderBox target = _itemKey.currentContext.findRenderObject();
-
-    Rect markRect = target.localToGlobal(Offset.zero) & target.size;
-    markRect = markRect.inflate(5.0);
-
-    coachMarkFAB.show(
-        targetContext: _itemKey.currentContext,
-        markRect: markRect,
-        markShape: BoxShape.rectangle,
-        children: [
-          Center(
-              child: Text("Select to start task\nSlide to delete or archive.",
-                  style: const TextStyle(
-                    fontSize: 24.0,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.white,
-                  )))
-        ],
-        duration: null,
-        onClose: () async {
-          await prefs.setBool('item', true);
-        });
   }
 
   @override
   Widget build(BuildContext context) {
-    Timer(Duration(seconds: 1), () => showCoachMarkItem());
     return Scaffold(
       key: _scaffoldKey,
-      floatingActionButton: FloatingActionButton(
-        key: _fabKey,
-        onPressed: () {
-          _addTask();
-        },
-        tooltip: 'Add new task',
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
+      floatingActionButton: Container(
+        width: 75.0,
+        height: 75.0,
+        child: RawMaterialButton(
+          shape: CircleBorder(),
+          fillColor: Colors.blue,
+          elevation: 0.0,
+          child: addTaskIcon,
+          onPressed: _addTask,
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverAppBar(
+              backgroundColor: Color(0xFaFaFa).withOpacity(1.0),
               expandedHeight: 80.0,
               floating: true,
               pinned: false,
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
-                title: Text(widget.title,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    )),
+                title: Text(
+                  'Daily Jobs',
+                  style: appBarTitle,
+                ),
               ),
             ),
           ];
@@ -184,8 +105,8 @@ class _HomePageState extends State<HomePage> {
                 if (tasks != null && tasks.length == 0) {
                   return Center(
                     child: Text(
-                      'Cool! Nothing to do.',
-                      style: TextStyle(fontSize: 24),
+                      'Cool! Nothing to do \n Let take a coffee',
+                      style: textDoneJob,
                     ),
                   );
                 } else {
@@ -205,15 +126,11 @@ class _HomePageState extends State<HomePage> {
                                   task: item,
                                   onRemoved: () async {
                                     await taskManager.loadAllTasks();
-                                    setState(() {
-                                      _showSnackBar('Removed: ${item.title}');
-                                    });
+                                    setState(() {});
                                   },
                                   onUpdated: () async {
                                     await taskManager.loadAllTasks();
-                                    setState(() {
-                                      _showSnackBar('Updated: ${item.title}');
-                                    });
+                                    setState(() {});
                                   },
                                   onTap: () {
                                     _startTimer(item);
@@ -259,7 +176,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                       widget.onTap();
                     },
                     child: Container(
-                        height: 72.0,
+                        // height: 50.0,
                         margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -268,38 +185,31 @@ class _TaskWidgetState extends State<TaskWidget> {
                               task.done
                                   ? Icons.check_circle
                                   : Icons.check_circle_outline,
-                              color: task.done ? Colors.green : Colors.red,
+                              color: task.done ? Colors.green : Colors.grey,
                             ),
                             Padding(
-                              padding: EdgeInsets.only(left: 8),
+                              padding: EdgeInsets.only(
+                                  left: 5.0, top: 5.0, bottom: 5.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Hero(
-                                      transitionOnUserGestures: true,
-                                      tag: 'text-${task.id}',
-                                      child: Text(
-                                        task.title,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      )),
-                                  Text(
-                                    task.description,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.normal,
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.only(left: 5.0, top: 5.0),
+                                    child: Text(
+                                      task.title,
+                                      style: taskTitle,
                                     ),
                                   ),
-                                  Text(
-                                    "${task.pomCount} pomodoro",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.normal,
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 5.0, top: 5.0, bottom: 5.0),
+                                    child: Text(
+                                      task.description,
+                                      style: taskDescription,
                                     ),
-                                  ),
+                                  )
                                 ],
                               ),
                             )
@@ -308,11 +218,7 @@ class _TaskWidgetState extends State<TaskWidget> {
       ),
       actions: <Widget>[
         IconButton(
-            icon: Icon(
-              Icons.archive,
-              size: 32.0,
-              color: Colors.blue,
-            ),
+            icon: doneTaskIcon,
             onPressed: () async {
               Task nTask = task..done = true;
               await Manager().updateTask(nTask);
@@ -321,16 +227,13 @@ class _TaskWidgetState extends State<TaskWidget> {
       ],
       secondaryActions: <Widget>[
         IconButton(
-            icon: Icon(
-              Icons.delete,
-              size: 32.0,
-              color: Colors.red,
-            ),
+            icon: removeTaskIcon,
             onPressed: () async {
               await Manager().removeTask(task);
               widget.onRemoved();
             }),
       ],
+      closeOnScroll: true,
     );
   }
 }

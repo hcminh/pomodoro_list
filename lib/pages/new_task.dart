@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/task.dart';
+import '../style.dart';
 import 'package:flutter/cupertino.dart';
 
 class NewTaskPage extends StatefulWidget {
@@ -23,14 +24,14 @@ class _NewTaskPageState extends State<NewTaskPage> {
       return;
     }
 
-    Navigator.pop(context, new Task(0, title, description, false));
+    Navigator.pop(context, Task(0, title, description, false));
   }
 
   @override
   void initState() {
     super.initState();
-    _descriptionController = new TextEditingController(text: '');
-    _titleController = new TextEditingController(text: '');
+    _descriptionController = TextEditingController(text: '');
+    _titleController = TextEditingController(text: '');
   }
 
   @override
@@ -51,7 +52,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
           color: Theme.of(context).primaryColor,
         ));
     return Scaffold(
-        body: new Material(
+        body: Material(
       color: Colors.white,
       child: Stack(
         children: <Widget>[
@@ -66,17 +67,13 @@ class _NewTaskPageState extends State<NewTaskPage> {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        icon: Icon(
-                          Icons.arrow_back,
-                          size: 32,
-                          color: Colors.grey,
-                        )),
+                        icon: backIcon),
                     Spacer(),
                     _isSaveButtonVisible ? saveButton : Spacer(),
                   ],
                 ),
               ),
-              new TextField(
+              TextField(
                 maxLength: maxTitleLength,
                 controller: _titleController,
                 style: TextStyle(
@@ -101,7 +98,7 @@ class _NewTaskPageState extends State<NewTaskPage> {
                   }
                 },
               ),
-              new TextField(
+              TextField(
                 controller: _descriptionController,
                 keyboardType: TextInputType.multiline,
                 maxLines: 10,

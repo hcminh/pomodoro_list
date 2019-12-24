@@ -32,7 +32,6 @@ class DatabaseUtil {
           'title TEXT,'
           'description TEXT,'
           'done INTEGER,'
-          'pomCount INTEGER'
           ')');
     });
   }
@@ -44,8 +43,8 @@ class DatabaseUtil {
     var id = table.first['id'];
 
     var raw = await db.rawInsert(
-        'INSERT Into Task (id, title, description, done, pomCount) VALUES (?,?,?,?,?)',
-        [id, task.title, task.description, task.done ? 1 : 0, task.pomCount]);
+        'INSERT Into Task (id, title, description, done) VALUES (?,?,?,?)',
+        [id, task.title, task.description, task.done ? 1 : 0]);
 
     print('Saved: $raw');
     return raw;
@@ -55,12 +54,11 @@ class DatabaseUtil {
     var db = await database;
 
     var raw = await db.rawUpdate(
-        'UPDATE Task SET title = ?, description = ?, done = ?, pomCount = ? WHERE id = ?',
+        'UPDATE Task SET title = ?, description = ?, done = ? WHERE id = ?',
         [
           task.title,
           task.description,
           task.done ? 1 : 0,
-          task.pomCount,
           task.id
         ]);
 

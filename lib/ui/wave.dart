@@ -70,13 +70,13 @@ class _DemoBodyState extends State<DemoBody> with TickerProviderStateMixin {
           curve: Curves.easeInOut,
         ),
         builder: (context, child) => new ClipPath(
-              child: new Container(
-                width: widget.size.width,
-                height: widget.size.height,
-                color: widget.color,
-              ),
-              clipper: new WaveClipper(animationController.value, animList1),
-            ),
+          child: new Container(
+            width: widget.size.width,
+            height: widget.size.height,
+            color: widget.color,
+          ),
+          clipper: new WaveClipper(animationController.value, animList1),
+        ),
       ),
     );
   }
