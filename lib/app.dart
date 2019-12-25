@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'pages/home.dart';
 import 'pages/page2.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class App extends StatelessWidget {
   @override
@@ -35,19 +34,6 @@ int _selectedPage = 0;
   Widget build(BuildContext context) {
     return new Scaffold(
       backgroundColor: Colors.grey,
-    /*  appBar: new AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/logo-eureka.png',
-              fit: BoxFit.contain,
-              height: 32,
-            ),
-          ],
-        ),
-        backgroundColor: Colors.blue,
-      ),*/
       body: _pageOptions[_selectedPage],
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -59,12 +45,12 @@ int _selectedPage = 0;
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Trang chủ'),
+            icon: Icon(Icons.check_circle_outline),
+            title: Text(''),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            title: Text('Bản đồ'),
+            icon: Icon(Icons.notifications_active),
+            title: Text(''),
           ),
         ],
       ),
