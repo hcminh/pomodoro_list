@@ -1,8 +1,8 @@
 // app.dart
 
 import 'package:flutter/material.dart';
-import 'pages/home.dart';
-import 'pages/page2.dart';
+import 'pages/taskPage.dart';
+import 'pages/notifyPage.dart';
 
 class App extends StatelessWidget {
   @override
@@ -28,7 +28,7 @@ int _selectedPage = 0;
 
   final _pageOptions = [
     HomePage(),
-    SecondPage(),
+    NotifyPage(),
   ];
   
   Widget build(BuildContext context) {
@@ -46,11 +46,11 @@ int _selectedPage = 0;
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.check_circle_outline),
-            title: Text(''),
+            title: Text('a'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications_active),
-            title: Text(''),
+            title: Text('a'),
           ),
         ],
       ),
