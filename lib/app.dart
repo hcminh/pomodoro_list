@@ -20,39 +20,72 @@ class MainPage extends StatefulWidget {
   final String title;
 
   @override
-  State<StatefulWidget> createState() => new _MyMainPageState();
+  State<StatefulWidget> createState() => _MyMainPageState();
 }
 
 class _MyMainPageState extends State<MainPage> {
-int _selectedPage = 0;
+  int _selectedPage = 0;
 
-  final _pageOptions = [
-    HomePage(),
-    ReminderPage(),
-  ];
-  
+  final pageController = PageController(
+    initialPage: 0,
+  );
+
+  Widget buildPageView() {
+    return PageView(
+      controller: pageController,
+      scrollDirection: Axis.horizontal,
+      physics: BouncingScrollPhysics(),
+      onPageChanged: (int index) {
+        setState(() {
+          _selectedPage = index;
+        });
+      },
+      children: <Widget>[
+        HomePage(),
+        ReminderPage(),
+      ],
+    );
+  }
+
+  List <BottomNavigationBarItem> bottomIconTap() {
+    return [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.check_circle_outline,
+              size: 30.0,
+            ),
+            title: Container(),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.notifications_active,
+              size: 30.0,
+            ),
+            title: Container(),
+          ),
+        ];
+  }
+
+  bottomTapped(int index) {
+    setState(() {
+      _selectedPage = index;
+      pageController.jumpToPage(index);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
     return new Scaffold(
-      backgroundColor: Colors.grey,
-      body: _pageOptions[_selectedPage],
+      body: buildPageView(),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedPage,
-        onTap: (int index) {
-          setState(() {
-            _selectedPage = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.check_circle_outline),
-            title: Text(''),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active),
-            title: Text(''),
-          ),
-        ],
+        onTap: bottomTapped,
+        items: bottomIconTap(),
       ),
     );
   }

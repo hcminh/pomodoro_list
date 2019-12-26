@@ -61,6 +61,9 @@ class _HomePageState extends State<HomePage> {
       setState(() {});
     }
     Navigator.pop(context);
+
+    _titleController.clear();
+    _descriptionController.clear();
   }
 
   @override
@@ -77,8 +80,8 @@ class _HomePageState extends State<HomePage> {
           child: addTaskIcon,
           onPressed: () => showDialog(
               context: context,
-              builder: (_) => CusAlertDialog("Your new task",
-                  _titleController, _descriptionController, _saveTaskAndClose)),
+              builder: (_) => CusAlertDialog("Your new task", _titleController,
+                  _descriptionController, _saveTaskAndClose)),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -142,5 +145,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-

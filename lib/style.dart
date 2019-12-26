@@ -39,7 +39,7 @@ const InputDecoration inputDecorationTitleTask = InputDecoration(
   hintText: 'Task title',
   filled: true,
   fillColor: Colors.white,
-  contentPadding: EdgeInsets.only(left: 8, right: 8),
+  contentPadding: EdgeInsets.only(left: 5, right: 5),
 );
 
 const TextStyle textFieldDescriptionTask = TextStyle(
@@ -51,7 +51,7 @@ const InputDecoration inputDecorationDescriptionTask = InputDecoration(
   hintText: 'Description',
   filled: true,
   fillColor: Colors.white,
-  contentPadding: EdgeInsets.only(left: 8, right: 8),
+  contentPadding: EdgeInsets.only(left: 5, right: 5, bottom: 0.0),
 );
 
 //icon custom
