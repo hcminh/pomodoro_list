@@ -1,20 +1,41 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import 'widgets/customAppBar.dart';
+import 'widgets/customAlertDialog.dart';
 import '../style.dart';
 
-class NotifyPage extends StatefulWidget {
-  NotifyPage({Key key}) : super(key: key);
+class ReminderPage extends StatefulWidget {
+  ReminderPage({Key key}) : super(key: key);
 
   @override
-  _NotifyPageState createState() => _NotifyPageState();
+  _ReminderPageState createState() => _ReminderPageState();
 }
 
-class _NotifyPageState extends State<NotifyPage> {
+class _ReminderPageState extends State<ReminderPage> {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  TextEditingController _titleController, _descriptionController;
+  _saveReminderAndClose() {}
+
+  showNotification() async {
+    var android = AndroidNotificationDetails(
+        'channel id', 'channel name', 'channel description');
+    var iOS = IOSNotificationDetails();
+    var platform = NotificationDetails(android, iOS);
+    var scheduledNotificationDateTime = new DateTime(2019, 12,26,13,37,0,0,0);
+    await flutterLocalNotificationsPlugin.schedule(0, 'Title ', 'Body', scheduledNotificationDateTime, platform);
+  }
+
 
   @override
   void initState() {
     super.initState();
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    var android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    var iOS = IOSInitializationSettings();
+    var initSettings = InitializationSettings(android, iOS);
+    flutterLocalNotificationsPlugin.initialize(initSettings);
   }
 
   @override
@@ -28,82 +49,20 @@ class _NotifyPageState extends State<NotifyPage> {
           fillColor: Colors.blue,
           elevation: 0.0,
           child: addTaskIcon,
-          // onPressed: _addTask,
-          onPressed: () => showDialog(
-              context: context,
-              builder: (_) => AlertDialog(
-                    title: Text("Add your new task"),
-                    content: Container(
-                      height: 140,
-                      width: MediaQuery.of(context).size.width * 0.95,
-                      child: Column(
-                        children: <Widget>[
-                        TextField(
-                          autofocus: true,
-                          maxLength: 24,
-                          // controller: _titleController,
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.black,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: 'Task title',
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding:
-                                EdgeInsets.only(left: 8, right: 8),
-                          ),
-                        ),
-                        TextField(
-                          // controller: _descriptionController,
-                          keyboardType: TextInputType.multiline,
-                          maxLength: 50,
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.black,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: 'Description',
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding:
-                                EdgeInsets.only(left: 8, right: 8),
-                          ),
-                        ),
-                      ],
-                    ),
-                    ),
-                    elevation: 24.0,
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text('Save', style: TextStyle(fontSize: 18.0,),),
-                        onPressed: () => {},
-                      ),
-                    ],
-                  )),
+          onPressed: showNotification,
+          // onPressed: () => showDialog(
+          //   context: context,
+          //   builder: (_) => CusAlertDialog("Your new reminder",
+          //       _titleController, _descriptionController, _saveReminderAndClose),
+          // ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              backgroundColor: Color(0xFaFaFa).withOpacity(1.0),
-              expandedHeight: 80.0,
-              floating: true,
-              pinned: false,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text(
-                  'Notify task',
-                  style: appBarTitle,
-                ),
-              ),
-            ),
-          ];
-        },
-        body: Text("COOL!")
-      ),
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[CusAppBar('Notify task')];
+          },
+          body: Text("COOL!")),
     );
   }
 }

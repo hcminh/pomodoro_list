@@ -19,4 +19,8 @@ class Manager {
   loadAllTasks() {
     tasksData = DatabaseUtil.db.getAll();
   }
+
+  loadTasks(int limit) {
+    tasksData = DatabaseUtil.db.getMany(limit);
+  }
 }

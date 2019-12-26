@@ -7,4 +7,5 @@ void main() {
     statusBarColor: Colors.transparent, //top bar color
   ));
   runApp(App());
+  
 }

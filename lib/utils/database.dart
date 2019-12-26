@@ -31,7 +31,7 @@ class DatabaseUtil {
           'id INTEGER PRIMARY KEY,'
           'title TEXT,'
           'description TEXT,'
-          'done INTEGER,'
+          'done INTEGER'
           ')');
     });
   }
@@ -55,12 +55,7 @@ class DatabaseUtil {
 
     var raw = await db.rawUpdate(
         'UPDATE Task SET title = ?, description = ?, done = ? WHERE id = ?',
-        [
-          task.title,
-          task.description,
-          task.done ? 1 : 0,
-          task.id
-        ]);
+        [task.title, task.description, task.done ? 1 : 0, task.id]);
 
     print('Updated');
     return raw;
@@ -78,6 +73,16 @@ class DatabaseUtil {
   Future<List<Task>> getAll() async {
     var db = await database;
     var query = await db.query('Task');
+
+    List<Task> tasks =
+        query.isNotEmpty ? query.map((t) => Task.fromMap(t)).toList() : [];
+
+    return tasks;
+  }
+
+  Future<List<Task>> getMany(int limit) async {
+    var db = await database;
+    var query = await db.query('Task', limit: limit);
 
     List<Task> tasks =
         query.isNotEmpty ? query.map((t) => Task.fromMap(t)).toList() : [];

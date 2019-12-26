@@ -28,7 +28,7 @@ int _selectedPage = 0;
 
   final _pageOptions = [
     HomePage(),
-    NotifyPage(),
+    ReminderPage(),
   ];
   
   Widget build(BuildContext context) {
@@ -46,11 +46,11 @@ int _selectedPage = 0;
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.check_circle_outline),
-            title: Text('a'),
+            title: Text(''),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications_active),
-            title: Text('a'),
+            title: Text(''),
           ),
         ],
       ),

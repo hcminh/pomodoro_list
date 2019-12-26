@@ -30,6 +30,30 @@ const TextStyle textDoneJob = TextStyle(
 const TextStyle textTimerCouting =
     TextStyle(fontSize: 54.0, color: Colors.black, fontWeight: FontWeight.bold);
 
+const TextStyle textFieldTitleTask = TextStyle(
+  fontSize: 20.0,
+  color: Colors.black,
+);
+
+const InputDecoration inputDecorationTitleTask = InputDecoration(
+  hintText: 'Task title',
+  filled: true,
+  fillColor: Colors.white,
+  contentPadding: EdgeInsets.only(left: 8, right: 8),
+);
+
+const TextStyle textFieldDescriptionTask = TextStyle(
+  fontSize: 16.0,
+  color: Colors.black,
+);
+
+const InputDecoration inputDecorationDescriptionTask = InputDecoration(
+  hintText: 'Description',
+  filled: true,
+  fillColor: Colors.white,
+  contentPadding: EdgeInsets.only(left: 8, right: 8),
+);
+
 //icon custom
 const Icon addTaskIcon = Icon(
   Icons.add,

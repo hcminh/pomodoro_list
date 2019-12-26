@@ -6,7 +6,9 @@ import '../utils/manager.dart';
 import '../pages/timer.dart';
 import '../style.dart';
 
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'widgets/customAppBar.dart';
+import 'widgets/customAlertDialog.dart';
+import 'widgets/customTask.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -73,79 +75,16 @@ class _HomePageState extends State<HomePage> {
           fillColor: Colors.blue,
           elevation: 0.0,
           child: addTaskIcon,
-          // onPressed: _addTask,
           onPressed: () => showDialog(
               context: context,
-              builder: (_) => AlertDialog(
-                    title: Text("Add your new task"),
-                    content: Container(
-                      height: 140,
-                      width: MediaQuery.of(context).size.width * 0.95,
-                      child: Column(
-                        children: <Widget>[
-                        TextField(
-                          autofocus: true,
-                          maxLength: 24,
-                          controller: _titleController,
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.black,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: 'Task title',
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding:
-                                EdgeInsets.only(left: 8, right: 8),
-                          ),
-                        ),
-                        TextField(
-                          controller: _descriptionController,
-                          keyboardType: TextInputType.multiline,
-                          maxLength: 50,
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: Colors.black,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: 'Description',
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding:
-                                EdgeInsets.only(left: 8, right: 8),
-                          ),
-                        ),
-                      ],
-                    ),
-                    ),
-                    elevation: 24.0,
-                    actions: <Widget>[
-                      FlatButton(
-                        child: Text('Save', style: TextStyle(fontSize: 18.0,),),
-                        onPressed: _saveTaskAndClose,
-                      ),
-                    ],
-                  )),
+              builder: (_) => CusAlertDialog("Your new task",
+                  _titleController, _descriptionController, _saveTaskAndClose)),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              backgroundColor: Color(0xFaFaFa).withOpacity(1.0),
-              expandedHeight: 80.0,
-              floating: true,
-              pinned: false,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text(
-                  'Daily Jobs',
-                  style: appBarTitle,
-                ),
-              ),
-            ),
-          ];
+          return <Widget>[CusAppBar('Daily task')];
         },
         body: Container(
           child: StreamBuilder(
@@ -154,13 +93,11 @@ class _HomePageState extends State<HomePage> {
               builder:
                   (BuildContext context, AsyncSnapshot<List<Task>> snapshot) {
                 var tasks = snapshot.data.reversed;
-
                 if (snapshot.connectionState != ConnectionState.done) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 }
-
                 if (tasks != null && tasks.length == 0) {
                   return Center(
                     child: Text(
@@ -206,93 +143,4 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class TaskWidget extends StatefulWidget {
-  final Task task;
-  final VoidCallback onRemoved;
-  final VoidCallback onUpdated;
-  final VoidCallback onTap;
 
-  TaskWidget({Key key, this.task, this.onRemoved, this.onUpdated, this.onTap})
-      : super(key: key);
-
-  _TaskWidgetState createState() => _TaskWidgetState();
-}
-
-class _TaskWidgetState extends State<TaskWidget> {
-  @override
-  Widget build(BuildContext context) {
-    final task = widget.task;
-    return Slidable(
-      delegate: new SlidableDrawerDelegate(),
-      actionExtentRatio: 0.25,
-      child: Container(
-        color: Colors.white,
-        child: Material(
-            child: Card(
-                margin: const EdgeInsets.fromLTRB(4, 4, 4, 4),
-                child: InkWell(
-                    onTap: () {
-                      widget.onTap();
-                    },
-                    child: Container(
-                        // height: 50.0,
-                        margin: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Icon(
-                              task.done
-                                  ? Icons.check_circle
-                                  : Icons.check_circle_outline,
-                              color: task.done ? Colors.green : Colors.grey,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: 5.0, top: 5.0, bottom: 5.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 5.0, top: 5.0),
-                                    child: Text(
-                                      task.title,
-                                      style: taskTitle,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 5.0, top: 5.0, bottom: 5.0),
-                                    child: Text(
-                                      task.description,
-                                      style: taskDescription,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ],
-                        ))))),
-      ),
-      actions: <Widget>[
-        IconButton(
-            icon: doneTaskIcon,
-            onPressed: () async {
-              Task nTask = task..done = true;
-              await Manager().updateTask(nTask);
-              widget.onUpdated();
-            }),
-      ],
-      secondaryActions: <Widget>[
-        IconButton(
-            icon: removeTaskIcon,
-            onPressed: () async {
-              await Manager().removeTask(task);
-              widget.onRemoved();
-            }),
-      ],
-      closeOnScroll: true,
-    );
-  }
-}
