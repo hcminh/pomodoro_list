@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../models/task.dart';
-import '../../utils/manager.dart';
+import '../../controllers/tasks/manager.dart';
 import '../../style.dart';
 
 class TaskWidget extends StatefulWidget {

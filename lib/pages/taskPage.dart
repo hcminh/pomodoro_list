@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/task.dart';
-import '../utils/manager.dart';
+import '../controllers/tasks/manager.dart';
 import '../pages/timer.dart';
 import '../style.dart';
 
@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey _itemKey = GlobalObjectKey("item");
   TextEditingController _titleController, _descriptionController;
+  CusAlertDialog taskAlertDialog;
 
   @override
   void initState() {
@@ -29,6 +30,8 @@ class _HomePageState extends State<HomePage> {
     taskManager.loadAllTasks();
     _descriptionController = TextEditingController(text: '');
     _titleController = TextEditingController(text: '');
+    taskAlertDialog = CusAlertDialog("Your new task", _titleController,
+        _descriptionController, _saveTaskAndClose);
   }
 
   void _startTimer(Task task) async {
@@ -80,8 +83,7 @@ class _HomePageState extends State<HomePage> {
           child: addTaskIcon,
           onPressed: () => showDialog(
               context: context,
-              builder: (_) => CusAlertDialog("Your new task", _titleController,
-                  _descriptionController, _saveTaskAndClose)),
+              builder: (_) => taskAlertDialog),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

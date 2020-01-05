@@ -1,5 +1,5 @@
 import 'database.dart';
-import '../models/task.dart';
+import '../../models/task.dart';
 
 class Manager {
   Future<List<Task>> tasksData;

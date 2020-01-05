@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'pages/taskPage.dart';
-import 'pages/notifyPage.dart';
+import 'pages/notePage.dart';
 
 class App extends StatelessWidget {
   @override
@@ -42,7 +42,7 @@ class _MyMainPageState extends State<MainPage> {
       },
       children: <Widget>[
         HomePage(),
-        ReminderPage(),
+        NotePage(),
       ],
     );
   }
@@ -58,7 +58,7 @@ class _MyMainPageState extends State<MainPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.notifications_active,
+              Icons.event_note,
               size: 30.0,
             ),
             title: Container(),
